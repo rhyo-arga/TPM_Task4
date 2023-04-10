@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    Home_Page(), const BantuanPage(), const Log_Out(),
+    Home_Page(), BantuanPage(), const Log_Out(),
   ];
 
   void _onItemTapped(int index) {
