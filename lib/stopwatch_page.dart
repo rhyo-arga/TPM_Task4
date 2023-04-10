@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 
 class StopwatchPage extends StatefulWidget {
   @override
@@ -8,109 +8,96 @@ class StopwatchPage extends StatefulWidget {
 }
 
 class _StopwatchPageState extends State<StopwatchPage> {
-  Stopwatch _stopwatch = Stopwatch();
+  late Stopwatch _stopwatch;
   late Timer _timer;
-  DateFormat _formatter = DateFormat('mm:ss.S');
-  String _display = '00:00.0';
+  bool _isRunning = false;
 
   @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _stopwatch = Stopwatch();
+    _timer = Timer.periodic(Duration(milliseconds: 10), _updateStopwatch);
   }
 
-  void _startTimer() {
-    _timer = Timer.periodic(Duration(milliseconds: 100), _updateDisplay);
-  }
-
-  void _updateDisplay(Timer timer) {
+  void _updateStopwatch(Timer timer) {
     if (_stopwatch.isRunning) {
-      setState(() {
-        _display = _formatter.format(DateTime(0).add(_stopwatch.elapsed));
-      });
+      setState(() {});
     }
   }
 
-  void _toggleStopwatch() {
+  void _startStopwatch() {
     setState(() {
-      if (_stopwatch.isRunning) {
-        _stopwatch.stop();
-        _timer.cancel();
-      } else {
-        _stopwatch.start();
-        _startTimer();
-      }
+      _isRunning = true;
     });
+    _stopwatch.start();
+  }
+
+  void _stopStopwatch() {
+    setState(() {
+      _isRunning = false;
+    });
+    _stopwatch.stop();
   }
 
   void _resetStopwatch() {
     setState(() {
+      _isRunning = false;
       _stopwatch.reset();
-      _display = '00:00.0';
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("Stopwatch"),
-          ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _display,
-                style: TextStyle(fontSize: 60),
-              ),
-              SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  StopwatchButton(
-                    text: _stopwatch.isRunning ? 'STOP' : 'START',
-                    onPressed: _toggleStopwatch,
-                  ),
-                  StopwatchButton(
-                    text: 'RESET',
-                    onPressed: _resetStopwatch,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        )
-    );
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
-}
-
-class StopwatchButton extends StatelessWidget {
-  final String text;
-  final Function onPressed;
-  const StopwatchButton({Key? key, required this.text, required this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+    String formattedTime = formatTime(_stopwatch.elapsedMilliseconds);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Stopwatch'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              formattedTime,
+              style: TextStyle(fontSize: 50),
             ),
-            onPressed: onPressed(),
-          ),
-        ],
+            SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                FloatingActionButton(
+                  heroTag: 'btn1',
+                  onPressed: _isRunning ? _stopStopwatch : _startStopwatch,
+                  child: _isRunning ? Icon(Icons.stop) : Icon(Icons.play_arrow),
+                ),
+                FloatingActionButton(
+                  heroTag: 'btn2',
+                  onPressed: _resetStopwatch,
+                  child: Icon(Icons.refresh),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  String formatTime(int milliseconds) {
+    int hundreds = (milliseconds / 10).truncate();
+    int seconds = (hundreds / 100).truncate();
+    int minutes = (seconds / 60).truncate();
+
+    String minutesStr = (minutes % 60).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+    String hundredsStr = (hundreds % 100).toString().padLeft(2, '0');
+
+    return "$minutesStr:$secondsStr:$hundredsStr";
   }
 }
