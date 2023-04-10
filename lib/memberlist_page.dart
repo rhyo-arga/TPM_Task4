@@ -72,7 +72,7 @@ class AnggotaPage extends StatelessWidget {
                           child: SizedBox(
                             height: MediaQuery.of(context).size.height,
                             width: 130,
-                            child: Image.asset('/images/.jpg'),
+                            child: Image.asset('/images/alfa.jpg'),
                           ),
                         ),
                         const SizedBox(
