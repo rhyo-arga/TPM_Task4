@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tpm_task4/favorite_page.dart';
-import 'package:tpm_task4/help_page.dart';
-import 'package:tpm_task4/login_page.dart';
-import 'package:tpm_task4/memberlist_page.dart';
-import 'package:tpm_task4/siterecom_page.dart';
-import 'package:tpm_task4/stopwatch_page.dart';
+import 'package:tpm_task4/data/situs.dart';
+import 'package:tpm_task4/pages/favorite_page.dart';
+import 'package:tpm_task4/pages/help_page.dart';
+import 'package:tpm_task4/pages/login_page.dart';
+import 'package:tpm_task4/pages/memberlist_page.dart';
+import 'package:tpm_task4/pages/siterecom_page.dart';
+import 'package:tpm_task4/pages/stopwatch_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -66,6 +67,8 @@ class Home_Page extends StatefulWidget {
 }
 
 class _Home_PageState extends State<Home_Page> {
+  final Sites sites = listSites[0];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,6 +84,7 @@ class _Home_PageState extends State<Home_Page> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   child: ElevatedButton(
                     onPressed: (){
@@ -94,6 +98,7 @@ class _Home_PageState extends State<Home_Page> {
                   ),
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   child: ElevatedButton(
                     onPressed: (){
@@ -107,11 +112,12 @@ class _Home_PageState extends State<Home_Page> {
                   ),
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   child: ElevatedButton(
                     onPressed: (){
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SitusPage()
+                          MaterialPageRoute(builder: (context) => SitusPage(sites:sites)
                           ));
                     },
                     child: Text("Situs Rekomendasi",
@@ -120,11 +126,12 @@ class _Home_PageState extends State<Home_Page> {
                   ),
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   child: ElevatedButton(
                     onPressed: (){
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => FavoritPage()
+                          MaterialPageRoute(builder: (context) => FavoritPage(sites: sites)
                           ));
                     },
                     child: Text("Favorit",
